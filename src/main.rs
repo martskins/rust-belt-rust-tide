@@ -1,10 +1,20 @@
 #![feature(async_await, async_closure)]
 
+#[macro_use]
+extern crate diesel;
+
+mod database;
 mod models;
 mod routes;
+mod schema;
+
+use database::Database;
 
 fn main() -> Result<(), std::io::Error> {
-    let mut app = tide::App::new();
+    dotenv::dotenv().ok();
+
+    let db = Database::establish_connection();
+    let mut app = tide::App::with_state(db);
 
     app.at("/").get(async move |_| "Hello, world!");
     app.at("/articles").get(routes::article::index);

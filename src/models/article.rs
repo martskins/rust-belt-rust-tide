@@ -1,6 +1,6 @@
 use serde::*;
 
-#[derive(Serialize)]
+#[derive(Serialize, Queryable)]
 pub struct Article {
     pub id: i64,
     pub author_id: i64,
