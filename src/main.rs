@@ -8,6 +8,7 @@ fn main() -> Result<(), std::io::Error> {
 
     app.at("/").get(async move |_| "Hello, world!");
     app.at("/articles").get(routes::article::list_articles);
+    app.at("/articles/:id").get(routes::article::get_article);
 
     app.run("127.0.0.1:8000")
 }
