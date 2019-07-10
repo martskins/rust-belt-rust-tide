@@ -1,0 +1,11 @@
+CREATE TABLE article (
+  id BIGSERIAL PRIMARY KEY,
+  slug VARCHAR(1024) NOT NULL,
+  title VARCHAR(1024) NOT NULL,
+  description TEXT NOT NULL,
+  tag_list TEXT[] NOT NULL DEFAULT '{}',
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  favorites_count INT NOT NULL DEFAULT 0,
+  author_id BIGINT NOT NULL
+);
