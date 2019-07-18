@@ -1,5 +1,9 @@
 use diesel::prelude::*;
-use tide::{EndpointResult, error::ResultExt, response};
+use tide::{
+    error::ResultExt,
+    response::{self, IntoResponse},
+    EndpointResult,
+};
 
 use crate::database::Database;
 use crate::models::{Article, NewArticle};
@@ -34,4 +38,16 @@ pub async fn create(mut ctx: tide::Context<Database>) -> EndpointResult {
         .server_err()?;
 
     Ok(response::json(&article))
+}
+
+pub async fn delete(ctx: tide::Context<Database>) -> EndpointResult {
+    let id: i64 = ctx.param("id").client_err()?;
+
+    let db: &Database = ctx.state();
+    let conn = db.conn.get().server_err()?;
+    diesel::delete(article::table.find(id))
+        .execute(&conn)
+        .server_err()?;
+
+    Ok(().into_response())
 }
