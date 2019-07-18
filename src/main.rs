@@ -19,6 +19,7 @@ fn main() -> Result<(), std::io::Error> {
     app.at("/").get(async move |_| "Hello, world!");
     app.at("/articles").get(routes::article::index);
     app.at("/articles/:id").get(routes::article::show);
+    app.at("/articles").post(routes::article::create);
 
     app.run("127.0.0.1:8000")
 }

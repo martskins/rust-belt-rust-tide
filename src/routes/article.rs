@@ -2,7 +2,7 @@ use diesel::prelude::*;
 use tide::{EndpointResult, error::ResultExt, response};
 
 use crate::database::Database;
-use crate::models::Article;
+use crate::models::{Article, NewArticle};
 use crate::schema::article;
 
 pub async fn index(ctx: tide::Context<Database>) -> EndpointResult {
@@ -19,6 +19,19 @@ pub async fn show(ctx: tide::Context<Database>) -> EndpointResult {
     let db: &Database = ctx.state();
     let conn = db.conn.get().server_err()?;
     let article: Article = article::table.find(id).first(&conn).server_err()?;
+
+    Ok(response::json(&article))
+}
+
+pub async fn create(mut ctx: tide::Context<Database>) -> EndpointResult {
+    let new_article: NewArticle = ctx.body_json().await.client_err()?;
+
+    let db: &Database = ctx.state();
+    let conn = db.conn.get().server_err()?;
+    let article: Article = diesel::insert_into(article::table)
+        .values(&new_article)
+        .get_result(&conn)
+        .server_err()?;
 
     Ok(response::json(&article))
 }
