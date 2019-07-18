@@ -6,7 +6,7 @@ use tide::{
 };
 
 use crate::database::Database;
-use crate::models::{Article, NewArticle};
+use crate::models::{Article, NewArticle, UpdateArticle};
 use crate::schema::article;
 
 pub async fn index(ctx: tide::Context<Database>) -> EndpointResult {
@@ -34,6 +34,20 @@ pub async fn create(mut ctx: tide::Context<Database>) -> EndpointResult {
     let conn = db.conn.get().server_err()?;
     let article: Article = diesel::insert_into(article::table)
         .values(&new_article)
+        .get_result(&conn)
+        .server_err()?;
+
+    Ok(response::json(&article))
+}
+
+pub async fn update(mut ctx: tide::Context<Database>) -> EndpointResult {
+    let id: i64 = ctx.param("id").client_err()?;
+    let update_article: UpdateArticle = ctx.body_json().await.client_err()?;
+
+    let db: &Database = ctx.state();
+    let conn = db.conn.get().server_err()?;
+    let article: Article = diesel::update(article::table.find(id))
+        .set(update_article)
         .get_result(&conn)
         .server_err()?;
 
