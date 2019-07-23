@@ -17,3 +17,21 @@ pub async fn index(_ctx: tide::Context<()>) -> EndpointResult {
 
     Ok(response::json(&articles))
 }
+
+pub async fn show(ctx: tide::Context<()>) -> EndpointResult {
+    let id = ctx.param("id").unwrap();
+
+    let article = Article {
+        id: id,
+        slug: "slug-text".to_string(),
+        title: "title-text".to_string(),
+        description: "description-text".to_string(),
+        tag_list: vec![],
+        created_at: chrono::Utc::now().naive_utc(),
+        updated_at: chrono::Utc::now().naive_utc(),
+        favorites_count: 0,
+        author_id: 1,
+    };
+
+    Ok(response::json(&article))
+}
