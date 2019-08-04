@@ -11,3 +11,22 @@ table! {
         updated_at -> Timestamp,
     }
 }
+
+table! {
+    user (id) {
+        id -> Int8,
+        name -> Varchar,
+        last_name -> Varchar,
+        email -> Varchar,
+        password -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+joinable!(article -> user (author_id));
+
+allow_tables_to_appear_in_same_query!(
+    article,
+    user,
+);
